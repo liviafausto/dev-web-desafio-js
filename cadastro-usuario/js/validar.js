@@ -22,7 +22,12 @@ function validarNome(e){
 
     if(e.target.value.trim().match(regexNome) == null){
         // Muda o conteúdo e o estilo do objeto nomeHelp que referencia o elemento html com id=inputNameHelp
-        nomeHelp.textContent = "Formato de nome inválido"; 
+        nomeHelp.textContent = "Formato de nome inválido. Deve seguir o formato 'Nome Sobrenome'"; 
+        nomeHelp.style.color="red";
+    }
+    else if(e.target.value.trim().length <= 6){
+        // Verifica se o comprimento do nome é maior que 6 letras
+        nomeHelp.textContent = "Formato de nome inválido. Deve ser ter mais que 6 letras."; 
         nomeHelp.style.color="red";
     }
     else{
