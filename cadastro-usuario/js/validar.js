@@ -1,13 +1,10 @@
 /* Criando os objetos dos elementos de texto do form */
 var nome = document.querySelector("#inputName");
 var nomeHelp = document.querySelector("#inputNameHelp");
-
 var ano = document.querySelector("#inputYear");
 var anoHelp = document.querySelector("#inputYearHelp");
-
 var email = document.querySelector("#inputEmail");
 var emailHelp = document.querySelector("#inputEmailHelp");
-
 var senha = document.querySelector("#inputPassword");
 var senhaMeter = document.querySelector("#passStrengthMeter");
 var senhaHelp = document.querySelector("#inputPasswordHelp");
@@ -98,11 +95,28 @@ function validarSenha(){
     if(tamanhoInvalido(senhaInserida) || temOcorrenciasFaltando(senhaInserida) || contemNomeOuAnoUsuario(senhaInserida)){
         senhaHelp.textContent = "Senha inválida.";
         senhaHelp.style.color = "red";
+        senhaResult.textContent = "";
+        passStrengthMeter.value = 0;
         return false;
     }
     
-    senhaHelp.textContent = "Senha válida";
-    senhaHelp.style.color = "green";
+    senhaHelp.textContent = "";
+    const nivelSeguranca = calcularNivelSeguranca(senhaInserida);
+    senhaResult.textContent = `${nivelSeguranca}`;
+
+    if(nivelSeguranca == "Fraca"){
+        senhaResult.style.color = "rgb(255, 149, 0)";
+        passStrengthMeter.value = 10;
+    }
+    else if(nivelSeguranca == "Moderada"){
+        senhaResult.style.color = "rgb(255, 196, 0)";
+        passStrengthMeter.value = 20;
+    }
+    else if(nivelSeguranca == "Forte"){
+        senhaResult.style.color = "rgb(45, 181, 45)";
+        passStrengthMeter.value = 30;
+    }
+
     return true;
 }
 
@@ -117,7 +131,6 @@ function temOcorrenciasFaltando(senha){
     const regexNumero = /[0-9]/; // Regex de números
     const regexLetra = /[a-zA-Z]/; // Regex de letras
 
-
     return !regexCaractereEspecial.test(senha) 
         || !regexNumero.test(senha)
         || !regexLetra.test(senha);
@@ -130,4 +143,33 @@ function contemNomeOuAnoUsuario(senha){
 
     return senha.toLowerCase().includes(nomeUsuario.toLowerCase())
         || senha.includes(anoNascimentoUsuario);
+}
+
+
+// Retorna o nível de segurança de uma senha válida
+function calcularNivelSeguranca(senha){
+    const regexCaractereEspecial = /[@#%&!+]/g; // Regex de caracteres especiais
+    const regexNumero = /[0-9]/g; // Regex de números
+    const regexLetraMaiuscula = /[A-Z]/g; // Regex de letras
+
+    // Contar ocorrências
+    const qtdEspeciais = senha.match(regexCaractereEspecial).length;
+    const qtdNumeros = senha.match(regexNumero).length;
+    const qtdMaiusculas = (senha.match(regexLetraMaiuscula) || []).length; // Maísculas não são obrigatórias, então senha.match() pode retornar null
+    
+    // Lembrando que todas as senhas válidas já contém pelo menos um caractere especial, um número e uma letra
+    console.log(`Caracteres especiais: ${qtdEspeciais}`);
+    console.log(`Números: ${qtdNumeros}`);
+    console.log(`Letras maiúsculas: ${qtdMaiusculas}`);
+
+    if(senha.length > 12 && qtdEspeciais > 1 && qtdNumeros > 1 && qtdMaiusculas > 1){
+        return "Forte";
+    }
+    else if(senha.length > 8 && qtdMaiusculas >= 1){
+        return "Moderada";
+    }
+    else{
+        return "Fraca";
+    }
+
 }
