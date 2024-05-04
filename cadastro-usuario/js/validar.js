@@ -1,3 +1,7 @@
+/* Lívia Fausto Cárnio - 13838346
+ * https://liviafausto.github.io/dev-web-desafio-js/ */
+
+
 /* Criando os objetos dos elementos de texto do form */
 var nome = document.querySelector("#inputName");
 var nomeHelp = document.querySelector("#inputNameHelp");
