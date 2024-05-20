@@ -25,7 +25,7 @@ senha.addEventListener('focusout', validarSenha); // Uma vez o foco do campo inp
 'e' é o objeto do tipo evento que contém, além de outras propriedades, o objeto que iniciou o evento, neste caso o objeto 'nome' */
 function validarNome(e){ 
     // Declaração da expressão regular para definir o formato de um nome válido
-    const regexNome = /^[a-zA-Z]+$/;
+    const regexNome = /^([A-Z][a-z]*\s)*[A-Z][a-z]*$/;
     
     console.log(e); // Impressão em console do objeto evento e
     console.log(e.target.value); // Impressão em console do valor do objeto 'nome' que originou o evento   
@@ -48,8 +48,8 @@ function validarAno(){
     console.log(ano.value);
 
     if(anoTrimado.match(regexAno) == null){
-        // Muda o conteúdo e o estilo do objeto anoHelp que referencia o elemento html com id=inputYearHelp
-        anoHelp.textContent = "Formato de ano inválido.";
+        // Verifica se a string de ano é formada por apenas 4 números
+        anoHelp.textContent = "Ano inválido";
         anoHelp.style.color = "red";
     }
     else{
@@ -57,7 +57,7 @@ function validarAno(){
         console.log(date.getFullYear()); // Obtém o ano atual
         
         if( parseInt(anoTrimado) > parseInt(date.getFullYear())-2 ){
-            // Muda o conteúdo e o estilo do objeto anoHelp que referencia o elemento html com id=inputYearHelp
+            // Verifica se o ano inserido é maior que 2022
             anoHelp.textContent = `Ano inválido. O ano não pode ser maior que ${date.getFullYear()-2}.`;
             anoHelp.style.color = "red";
         }
