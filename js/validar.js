@@ -25,19 +25,14 @@ senha.addEventListener('focusout', validarSenha); // Uma vez o foco do campo inp
 'e' é o objeto do tipo evento que contém, além de outras propriedades, o objeto que iniciou o evento, neste caso o objeto 'nome' */
 function validarNome(e){ 
     // Declaração da expressão regular para definir o formato de um nome válido
-    const regexNome = /^[A-Z][a-z]+ [A-Z][a-z]+$/;
+    const regexNome = /^[a-zA-Z]+$/;
     
     console.log(e); // Impressão em console do objeto evento e
     console.log(e.target.value); // Impressão em console do valor do objeto 'nome' que originou o evento   
 
-    if(e.target.value.trim().match(regexNome) == null){
-        // Muda o conteúdo e o estilo do objeto nomeHelp que referencia o elemento html com id=inputNameHelp
-        nomeHelp.textContent = "Nome inválido. Deve seguir o formato 'Nome Sobrenome'."; 
-        nomeHelp.style.color = "red";
-    }
-    else if(e.target.value.trim().length <= 6){
-        // Verifica se o comprimento do nome é maior que 6 letras
-        nomeHelp.textContent = "Nome inválido. Deve ter mais que 6 letras."; 
+    if(e.target.value.trim().match(regexNome) == null || e.target.value.trim().length < 6){
+        // Verifica se o nome do usuário somente contém letras e se tem comprimento maior ou igual a 6
+        nomeHelp.textContent = "Nome inválido"; 
         nomeHelp.style.color = "red";
     }
     else{
