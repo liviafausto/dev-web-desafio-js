@@ -139,9 +139,21 @@ function temOcorrenciasFaltando(senha){
 function contemNomeOuAnoUsuario(senha){
     const nomeUsuario = nome.value.trim().replace(/\s+/g, ''); // Remove os espaços em branco entre as palavras
     const anoNascimentoUsuario = ano.value.trim();
+    let contemNome, contemAno;
 
-    return senha.toLowerCase().includes(nomeUsuario.toLowerCase())
-        || senha.includes(anoNascimentoUsuario);
+    if(nomeUsuario.length == 0){
+        contemNome = false;
+    } else {
+        contemNome = senha.toLowerCase().includes(nomeUsuario.toLowerCase());
+    }
+
+    if(anoNascimentoUsuario.length == 0){
+        contemAno = false;
+    } else {
+        contemAno = senha.includes(anoNascimentoUsuario);
+    }
+
+    return contemNome || contemAno;
 }
 
 
