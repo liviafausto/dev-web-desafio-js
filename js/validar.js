@@ -14,6 +14,10 @@ var senhaMeter = document.querySelector("#passStrengthMeter");
 var senhaHelp = document.querySelector("#inputPasswordHelp");
 var senhaResult = document.querySelector("#inputResult");
 
+/* Registrando validação dos campos */
+var nomeValido = false;
+var anoValido = false;
+var emailValido = false;
 
 /* Declarando o evento listener para os campos de texto do form. */
 nome.addEventListener('focusout', validarNome); // Uma vez o foco do campo inputName mude, será chamada a função validarNome
@@ -34,9 +38,11 @@ function validarNome(e){
         // Verifica se o nome do usuário somente contém letras e se tem comprimento maior ou igual a 6
         nomeHelp.textContent = "Nome inválido"; 
         nomeHelp.style.color = "red";
+        nomeValido = false;
     }
     else{
         nomeHelp.textContent = "";
+        nomeValido = true;
     }       
 }
 
@@ -51,6 +57,7 @@ function validarAno(){
         // Verifica se a string de ano é formada por apenas 4 números
         anoHelp.textContent = "Ano inválido";
         anoHelp.style.color = "red";
+        anoValido = false;
     }
     else{
         var date = new Date(); // Objeto Date
@@ -58,18 +65,20 @@ function validarAno(){
         
         if( parseInt(anoTrimado) > parseInt(date.getFullYear())-2 ){
             // Verifica se o ano inserido é maior que 2022
-            anoHelp.textContent = `Ano inválido. O ano não pode ser maior que ${date.getFullYear()-2}.`;
+            anoHelp.textContent = "Ano inválido";
             anoHelp.style.color = "red";
+            anoValido = false;
         }
         else if( parseInt(anoTrimado) < parseInt(date.getFullYear())-120 ){
             // Muda o conteúdo e o estilo do objeto anoHelp que referencia o elemento html com id=inputYearHelp
-            anoHelp.textContent = `Ano inválido. O ano não pode ser menor que ${date.getFullYear()-120}.`;
+            anoHelp.textContent = "Ano inválido";
             anoHelp.style.color = "red";
+            anoValido = false;
         }
         else{
             anoHelp.textContent = "";
+            anoValido = true;
         }        
-        
     }
 }
 
@@ -79,11 +88,13 @@ function validarEmail(){
     console.log(email.value);
 
     if(email.value.trim().match(regexEmail) == null){
-        emailHelp.textContent = "Formato de email inválido.";
+        emailHelp.textContent = "Formato de email inválido";
         emailHelp.style.color = "red";
+        emailValido = false;
     }
     else{
         emailHelp.textContent = "";
+        emailValido = true;
     }
 
 }
@@ -92,28 +103,37 @@ function validarSenha(){
     const senhaInserida = senha.value.trim();
 
     if(tamanhoInvalido(senhaInserida) || temOcorrenciasFaltando(senhaInserida) || contemNomeOuAnoUsuario(senhaInserida)){
-        senhaHelp.textContent = "Senha inválida.";
+        senhaHelp.textContent = "Senha inválida";
         senhaHelp.style.color = "red";
-        senhaResult.textContent = "";
+        senhaResult.textContent = "Seus dados não foram registrados";
+        senhaResult.style.color = "red";
         passStrengthMeter.value = 0;
+        senhaValida = false;
         return false;
     }
     
-    senhaHelp.textContent = "";
     const nivelSeguranca = calcularNivelSeguranca(senhaInserida);
-    senhaResult.textContent = `${nivelSeguranca}`;
+    senhaHelp.textContent = `${nivelSeguranca}`;
 
     if(nivelSeguranca == "Fraca"){
-        senhaResult.style.color = "rgb(255, 149, 0)";
+        senhaHelp.style.color = "rgb(255, 149, 0)";
         passStrengthMeter.value = 10;
     }
     else if(nivelSeguranca == "Moderada"){
-        senhaResult.style.color = "rgb(255, 196, 0)";
+        senhaHelp.style.color = "rgb(255, 196, 0)";
         passStrengthMeter.value = 20;
     }
     else if(nivelSeguranca == "Forte"){
-        senhaResult.style.color = "rgb(45, 181, 45)";
+        senhaHelp.style.color = "rgb(45, 181, 45)";
         passStrengthMeter.value = 30;
+    }
+
+    if(nomeValido == true && anoValido == true && emailValido == true){
+        senhaResult.textContent = "Seus dados foram registrados";
+        senhaResult.style.color = "green";
+    }else{
+        senhaResult.textContent = "Seus dados não foram registrados";
+        senhaResult.style.color = "red";
     }
 
     return true;
@@ -137,19 +157,20 @@ function temOcorrenciasFaltando(senha){
 
 // Validar se a senha contém o nome ou o ano de nascimento do usuário
 function contemNomeOuAnoUsuario(senha){
-    const nomeUsuario = nome.value.trim().replace(/\s+/g, ''); // Remove os espaços em branco entre as palavras
-    const anoNascimentoUsuario = ano.value.trim();
-    let contemNome, contemAno;
+    let contemNome;
+    let contemAno;
 
-    if(nomeUsuario.length == 0){
+    if(nomeValido == false){
         contemNome = false;
     } else {
+        const nomeUsuario = nome.value.trim().replace(/\s+/g, ''); // Remove os espaços em branco entre as palavras
         contemNome = senha.toLowerCase().includes(nomeUsuario.toLowerCase());
     }
 
-    if(anoNascimentoUsuario.length == 0){
+    if(anoValido == false){
         contemAno = false;
     } else {
+        const anoNascimentoUsuario = ano.value.trim();
         contemAno = senha.includes(anoNascimentoUsuario);
     }
 
